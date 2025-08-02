@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MediCare+ | Doctor Login</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div class="branding">
+    <img src="logo.png" class="floating-logo" alt="MediCare+ Logo"/>
+    <span class="brand-text">MediCare+</span>
+  </div>
+
+  <nav class="top-nav">
+    <a href="doctor-signup.html" class="nav-link">Sign Up</a>
+    <a href="doctor-login.html" class="nav-link active">Sign In</a>
+  </nav>
+
+  <div class="container">
+    <h1 class="title"> Doctor Login</h1>
+    <div class="card">
+      <input type="email" id="doctorEmail" placeholder="Email"/>
+      <input type="password" id="doctorPassword" placeholder="Password"/>
+      <button class="btn-glow" onclick="doctorLogin()">Send OTP</button>
+
+      <!-- OTP Section -->
+      <div id="doctorOtpSection" class="hidden">
+        <input type="text" id="doctorOtpInput" placeholder="Enter 6-digit OTP"/>
+        <button class="btn-glow" onclick="verifyDoctorOTP()">Verify OTP</button>
+      </div>
+
+      <p class="hint-text">New doctor? <a href="doctor-signup.html">Sign Up</a></p>
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+  <footer class="footer">© 2025 MediCare+ | All Rights Reserved</footer>
+  <script src="script.js"></script>
+</body>
+</html>

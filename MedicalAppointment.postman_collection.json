@@ -1,0 +1,123 @@
+{
+  "info": {
+    "name": "Medical Appointment Booking System",
+    "_postman_id": "12345678-1234-5678-1234-567812345678",
+    "description": "Postman collection for testing Medical Appointment Booking System APIs",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Register Patient",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"role\": \"patient\",\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"123456\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/auth/register",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["api", "auth", "register"]
+        }
+      }
+    },
+    {
+      "name": "Register Doctor",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"role\": \"doctor\",\n  \"name\": \"Dr. Smith\",\n  \"specialization\": \"Cardiology\",\n  \"email\": \"smith@example.com\",\n  \"password\": \"123456\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/auth/register",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["api", "auth", "register"]
+        }
+      }
+    },
+    {
+      "name": "Login Patient",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"role\": \"patient\",\n  \"email\": \"john@example.com\",\n  \"password\": \"123456\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/auth/login",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["api", "auth", "login"]
+        }
+      }
+    },
+    {
+      "name": "Book Appointment",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer <PASTE_JWT_TOKEN>" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"doctor_id\": 1,\n  \"appointment_date\": \"2025-08-05 10:30:00\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/appointments/book",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["api", "appointments", "book"]
+        }
+      }
+    },
+    {
+      "name": "Get My Appointments",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer <PASTE_JWT_TOKEN>" }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/api/appointments/my",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["api", "appointments", "my"]
+        }
+      }
+    },
+    {
+      "name": "Cancel Appointment",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Authorization", "value": "Bearer <PASTE_JWT_TOKEN>" }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/api/appointments/cancel/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["api", "appointments", "cancel", "1"]
+        }
+      }
+    }
+  ]
+}

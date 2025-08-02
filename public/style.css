@@ -1,0 +1,124 @@
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: url('background.jpg') no-repeat center center fixed;
+  background-size: cover;
+  color: white;
+}
+
+.hidden {
+  display: none;
+}
+
+.branding {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.floating-logo {
+  width: 50px;
+  animation: float 3s infinite ease-in-out;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.brand-text {
+  font-size: 20px;
+  font-weight: bold;
+  margin-left: 10px;
+  text-shadow: 0 0 10px yellow;
+}
+
+.top-nav {
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+  background: rgba(0,0,0,0.5);
+}
+
+.nav-link {
+  color: white;
+  margin: 0 15px;
+  text-decoration: none;
+}
+
+.nav-link.active {
+  border-bottom: 2px solid yellow;
+}
+
+.container {
+  text-align: center;
+  margin-top: 120px;
+}
+
+.card {
+  background: rgba(0,0,0,0.7);
+  display: inline-block;
+  padding: 20px;
+  margin-top: 20px;
+  border-radius: 12px;
+  width: 300px;
+}
+
+input {
+  width: 90%;
+  padding: 8px;
+  margin: 8px 0;
+  border-radius: 6px;
+  border: none;
+}
+
+.btn-glow {
+  background: yellow;
+  color: black;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  padding: 10px;
+  background: rgba(0,0,0,0.5);
+}
+
+/* Toast Notification Styles */
+#toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+}
+
+.toast {
+  background: #222;
+  color: #fff;
+  padding: 12px 20px;
+  margin-top: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  transform: translateX(100%);
+  transition: all 0.4s ease;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.toast.success { background: #28a745; }
+.toast.error { background: #dc3545; }
+.toast.info { background: #007bff; }
