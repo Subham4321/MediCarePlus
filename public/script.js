@@ -1,183 +1,210 @@
-let currentUser = null;
-
-// ✅ Toast Notification
-function showToast(message, type = "info") {
+// ------------------- Toast Notifications -------------------
+function showToast(message, type = "success") {
   const container = document.getElementById("toast-container");
   const toast = document.createElement("div");
   toast.className = `toast ${type}`;
   toast.textContent = message;
-
   container.appendChild(toast);
 
-  setTimeout(() => toast.classList.add("show"), 100);
+  setTimeout(() => toast.classList.add("show"), 100); // slide in
+
   setTimeout(() => {
-    toast.classList.remove("show");
+    toast.classList.remove("show"); // slide out
     setTimeout(() => toast.remove(), 500);
-  }, 3000);
+  }, 4000);
 }
 
-//
-// ------------------ PATIENT FUNCTIONS ------------------
-//
-
-// Patient Sign Up
+// ------------------- Patient Signup -------------------
 async function signup() {
-  const name = document.getElementById("signupName").value;
+  const name = document.getElementById("name").value;
   const email = document.getElementById("signupEmail").value;
   const password = document.getElementById("signupPassword").value;
 
-  if (!name || !email || !password)
-    return showToast("⚠️ All fields are required", "error");
-
-  const res = await fetch("/signup", {
+  const response = await fetch("/signup", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, email, password }),
+    body: JSON.stringify({ name, email, password })
   });
 
-  const data = await res.json();
+  const data = await response.json();
   if (data.success) {
-    showToast("✅ Registration successful! Please log in.", "success");
-    setTimeout(() => (window.location.href = "patient-login.html"), 1000);
+    showToast("✅ Signup successful! OTP sent to your email.", "success");
+    document.getElementById("signupOtpSection").classList.remove("hidden");
   } else {
-    showToast("❌ " + data.error, "error");
+    showToast(data.error || "❌ Signup failed", "error");
   }
 }
 
-// Patient Login → Send OTP
-async function login() {
-  const email = document.getElementById("patientEmail").value;
-  const password = document.getElementById("patientPassword").value;
+async function verifySignupOTP() {
+  const email = document.getElementById("signupEmail").value;
+  const otp = document.getElementById("signupOtpInput").value;
 
-  if (!email || !password)
-    return showToast("⚠️ Enter email & password", "error");
-
-  const res = await fetch("/send-otp", {
+  const response = await fetch("/verify-signup-otp", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ email, otp })
   });
 
-  const data = await res.json();
+  const data = await response.json();
   if (data.success) {
-    currentUser = { email };
+    showToast("🎉 Account verified! You can now log in.", "success");
+    setTimeout(() => (window.location.href = "index.html"), 2000);
+  } else {
+    showToast("❌ Invalid OTP", "error");
+  }
+}
+
+// ------------------- Patient Login -------------------
+async function sendOTP() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  const response = await fetch("/send-otp", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password })
+  });
+
+  const data = await response.json();
+  if (data.success) {
+    showToast("📧 OTP sent to your email", "success");
     document.getElementById("otpSection").classList.remove("hidden");
-    showToast("✅ OTP sent to your email!", "success");
   } else {
-    showToast("❌ " + data.error, "error");
+    showToast(data.error || "❌ Login failed", "error");
   }
 }
 
-// Patient Verify OTP → Redirect to Dashboard
 async function verifyOTP() {
-  const otpInput = document.getElementById("otpInput").value;
-  const email = currentUser?.email;
+  const email = document.getElementById("email").value;
+  const otp = document.getElementById("otpInput").value;
 
-  if (!otpInput || !email) return showToast("⚠️ Enter OTP", "error");
-
-  const res = await fetch("/verify-otp", {
+  const response = await fetch("/verify-otp", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, otp: otpInput }),
+    body: JSON.stringify({ email, otp })
   });
 
-  const data = await res.json();
+  const data = await response.json();
   if (data.success) {
-    showToast("✅ OTP verified! Redirecting...", "success");
-    setTimeout(() => (window.location.href = "patient-dashboard.html"), 1000);
+    showToast("✅ Login successful!", "success");
+    document.getElementById("loginCard").classList.add("hidden");
+    document.getElementById("dashboard").classList.remove("hidden");
+    loadAppointments(email);
   } else {
-    showToast("❌ " + data.error, "error");
+    showToast("❌ Invalid OTP", "error");
   }
 }
 
-//
-// ------------------ DOCTOR FUNCTIONS ------------------
-//
+// ------------------- Book Appointment -------------------
+async function bookAppointment() {
+  const email = document.getElementById("email").value;
+  const doctorId = document.getElementById("doctorId").value;
+  const date = document.getElementById("appointmentDate").value;
 
-// Doctor Sign Up
-async function doctorSignup() {
-  const name = document.getElementById("doctorName").value;
-  const specialization = document.getElementById("doctorSpec").value;
-  const email = document.getElementById("doctorSignupEmail").value;
-  const password = document.getElementById("doctorSignupPassword").value;
+  if (!date) {
+    showToast("⚠️ Please select a date and time", "error");
+    return;
+  }
 
-  if (!name || !specialization || !email || !password)
-    return showToast("⚠️ All fields are required", "error");
-
-  const res = await fetch("/doctor/signup", {
+  const response = await fetch("/book-appointment", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, specialization, email, password }),
+    body: JSON.stringify({ patientEmail: email, doctorId, date })
   });
 
-  const data = await res.json();
+  const data = await response.json();
   if (data.success) {
-    showToast("✅ Doctor registered successfully!", "success");
-    setTimeout(() => (window.location.href = "doctor-login.html"), 1000);
+    showToast("🎉 Appointment booked!", "success");
+    loadAppointments(email);
   } else {
-    showToast("❌ " + data.error, "error");
+    showToast(data.error || "❌ Failed to book", "error");
   }
 }
 
-// Doctor Login → Send OTP
+// ------------------- Load Patient Appointments -------------------
+async function loadAppointments(email) {
+  const response = await fetch(`/appointments?email=${encodeURIComponent(email)}`);
+  const data = await response.json();
+
+  const list = document.getElementById("appointmentsList");
+  list.innerHTML = "";
+
+  data.forEach(app => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <b>Doctor:</b> ${app.doctor_name} <br>
+      <b>Time:</b> ${new Date(app.appointment_time).toLocaleString()} <br>
+      <b>Status:</b> ${app.status}
+    `;
+    list.appendChild(li);
+  });
+}
+
+// ------------------- Doctor Login -------------------
 async function doctorLogin() {
   const email = document.getElementById("doctorEmail").value;
   const password = document.getElementById("doctorPassword").value;
 
-  if (!email || !password)
-    return showToast("⚠️ Enter email & password", "error");
-
-  const res = await fetch("/doctor/send-otp", {
+  const response = await fetch("/doctor-login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ email, password })
   });
 
-  const data = await res.json();
+  const data = await response.json();
   if (data.success) {
-    currentUser = { email };
-    document.getElementById("doctorOtpSection").classList.remove("hidden");
-    showToast("✅ OTP sent to your email!", "success");
+    showToast("✅ Doctor Logged In", "success");
+    document.getElementById("doctorLoginCard").classList.add("hidden");
+    document.getElementById("doctorDashboard").classList.remove("hidden");
+    loadDoctorAppointments(email);
+
+    // Auto-refresh every 10 seconds
+    setInterval(() => loadDoctorAppointments(email), 10000);
   } else {
-    showToast("❌ " + data.error, "error");
+    showToast(data.error || "❌ Login failed", "error");
   }
 }
 
-// Doctor Verify OTP → Redirect to Dashboard
-async function verifyDoctorOTP() {
-  const otpInput = document.getElementById("doctorOtpInput").value;
-  const email = currentUser?.email;
+// ------------------- Load Doctor Appointments -------------------
+async function loadDoctorAppointments(email) {
+  const response = await fetch(`/doctor-appointments?email=${encodeURIComponent(email)}`);
+  const data = await response.json();
 
-  if (!otpInput || !email) return showToast("⚠️ Enter OTP", "error");
+  const list = document.getElementById("doctorAppointments");
+  list.innerHTML = "";
 
-  const res = await fetch("/verify-otp", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, otp: otpInput }),
+  data.forEach(app => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <b>Patient:</b> ${app.patient_name} <br>
+      <b>Time:</b> ${new Date(app.appointment_time).toLocaleString()} <br>
+      <b>Status:</b> ${app.status}
+      ${app.status === 'Pending' ? `
+        <div>
+          <button onclick="updateAppointment(${app.id}, 'Confirmed')">Confirm</button>
+          <button onclick="updateAppointment(${app.id}, 'Cancelled')">Cancel</button>
+        </div>
+      ` : ''}
+    `;
+    list.appendChild(li);
   });
-
-  const data = await res.json();
-  if (data.success) {
-    showToast("✅ Doctor OTP verified! Redirecting...", "success");
-    setTimeout(() => (window.location.href = "doctor-dashboard.html"), 1000);
-  } else {
-    showToast("❌ " + data.error, "error");
-  }
 }
 
-//
-// ------------------ PATIENT DASHBOARD ------------------
-//
+// ------------------- Update Appointment Status -------------------
+async function updateAppointment(id, status) {
+  const response = await fetch("/update-appointment", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id, status })
+  });
 
-function bookAppointment() {
-  const doctorId = document.getElementById("doctorId").value;
-  const date = document.getElementById("appointmentDate").value;
-  if (!doctorId || !date) return showToast("⚠️ Fill all fields", "error");
-
-  const list = document.getElementById("appointmentsList");
-  const li = document.createElement("li");
-  li.textContent = `Doctor ${doctorId} | ${new Date(date).toLocaleString()}`;
-  list.appendChild(li);
-
-  showToast("✅ Appointment booked!", "success");
+  const data = await response.json();
+  if (data.success) {
+    showToast(`✅ Appointment ${status}`, "success");
+    // Refresh doctor appointments immediately
+    const email = document.getElementById("doctorEmail").value;
+    if (email) loadDoctorAppointments(email);
+  } else {
+    showToast("❌ Failed to update appointment", "error");
+  }
 }

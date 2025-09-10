@@ -3,39 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MediCare+ | Doctor Login</title>
+  <title>MediCare+ | Doctor Dashboard</title>
   <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-  <div class="branding">
-    <img src="logo.png" class="floating-logo" alt="MediCare+ Logo"/>
-    <span class="brand-text">MediCare+</span>
-  </div>
-
-  <nav class="top-nav">
-    <a href="doctor-signup.html" class="nav-link">Sign Up</a>
-    <a href="doctor-login.html" class="nav-link active">Sign In</a>
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-left">
+      <img src="logo.png" alt="MediCare+ Logo" class="nav-logo"/>
+      <span class="nav-title">MediCare+</span>
+    </div>
+    <div class="nav-links">
+      <a href="index.html">Patient Login</a>
+      <a href="signup.html">Patient Sign Up</a>
+      <a href="doctor-login.html" class="active">Doctor Portal</a>
+    </div>
   </nav>
 
-  <div class="container">
-    <h1 class="title"> Doctor Login</h1>
-    <div class="card">
+  <div class="container fade-in">
+    <div class="card" id="doctorLoginCard">
+      <h2> Doctor Login</h2>
       <input type="email" id="doctorEmail" placeholder="Email"/>
       <input type="password" id="doctorPassword" placeholder="Password"/>
-      <button class="btn-glow" onclick="doctorLogin()">Send OTP</button>
+      <button class="btn-glow" onclick="doctorLogin()">Login</button>
+    </div>
 
-      <!-- OTP Section -->
-      <div id="doctorOtpSection" class="hidden">
-        <input type="text" id="doctorOtpInput" placeholder="Enter 6-digit OTP"/>
-        <button class="btn-glow" onclick="verifyDoctorOTP()">Verify OTP</button>
-      </div>
-
-      <p class="hint-text">New doctor? <a href="doctor-signup.html">Sign Up</a></p>
+    <div id="doctorDashboard" class="card hidden fade-in">
+      <h2> Your Appointments</h2>
+      <ul id="doctorAppointments"></ul>
     </div>
   </div>
 
+  <footer class="footer">© 2025 MediCare+ | Doctor Portal</footer>
   <div id="toast-container"></div>
-  <footer class="footer">© 2025 MediCare+ | All Rights Reserved</footer>
+
   <script src="script.js"></script>
 </body>
 </html>
